@@ -329,8 +329,8 @@ if [ $STAGE -le 3 ]; then
         # 129P, 3.18G, 10 min
         hammer repository-set enable --organization "$ORG" --product 'JBoss Enterprise Application Platform' --basearch='x86_64' --releasever='7Server' --name 'JBoss Enterprise Application Platform 7 (RHEL 7 Server) (RPMs)'
         time hammer repository synchronize --organization "$ORG" --product 'JBoss Enterprise Application Platform'  --name  'JBoss Enterprise Application Platform 7 RHEL 7 Server RPMs x86_64 7Server' 2>/dev/null
-        hammer repository-set enable --organization "$ORG" --product 'Red Hat Enterprise Virtualization' --basearch='x86_64' --releasever='7Server' --name 'Red Hat Enterprise Virtualization Management Agents for RHEL 7 (RPMs)'
-        time hammer repository synchronize --organization "$ORG" --product 'Red Hat Enterprise Virtualization'  --name  'Red Hat Enterprise Virtualization Management Agents for RHEL 7 RPMs x86_64 7Server' 2>/dev/null
+        hammer repository-set enable --organization "$ORG" --product 'Red Hat Virtualization' --basearch='x86_64' --releasever='7Server' --name 'Red Hat Virtualization 4 Management Agents for RHEL 7 (RPMs)'
+        time hammer repository synchronize --organization "$ORG" --product 'Red Hat Virtualization'  --name  'Red Hat Virtualization 4 Management Agents for RHEL 7 RPMs x86_64 7Server' 2>/dev/null
         hammer repository-set enable --organization "$ORG" --product 'Red Hat Satellite' --basearch='x86_64' --name 'Red Hat Satellite 6.2 (for RHEL 7 Server) (RPMs)'
         time hammer repository synchronize --organization "$ORG" --product 'Red Hat Satellite'  --name  'Red Hat Satellite 6.2 for RHEL 7 Server RPMs x86_64' 2>/dev/null
         # 225P, 310M, 6 min
@@ -381,20 +381,20 @@ if [ $STAGE -le 3 ]; then
         hammer repository-set enable --organization "$ORG" --product 'Red Hat Enterprise Linux Server' --basearch='x86_64' --releasever='7Server' --name 'Red Hat OpenStack Tools 7.0 for Red Hat Enterprise Linux 7 Server (RPMs)'
         time hammer repository synchronize --organization "$ORG" --product 'Red Hat Enterprise Linux Server'  --name  'Red Hat OpenStack Tools 7.0 for Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server' 2>/dev/null
 
-        hammer repository-set enable --organization "$ORG" --product 'Red Hat Enterprise Virtualization' --basearch='x86_64' --releasever='7Server' --name 'Red Hat Enterprise Virtualization Hypervisor 7 (RPMs)'
-        time hammer repository synchronize --organization "$ORG" --product 'Red Hat Enterprise Virtualization'  --name  'Red Hat Enterprise Virtualization Hypervisor 7 RPMs x86_64 7Server' 2>/dev/null
-        hammer repository-set enable --organization "$ORG" --product 'Red Hat Enterprise Virtualization' --basearch='x86_64' --name 'Red Hat Enterprise Virtualization Manager 3.6 (RPMs)'
-        time hammer repository synchronize --organization "$ORG" --product 'Red Hat Enterprise Virtualization'  --name  'Red Hat Enterprise Virtualization Manager 3.6 RPMs x86_64' 2>/dev/null
+        hammer repository-set enable --organization "$ORG" --product 'Red Hat Virtualization' --basearch='x86_64' --releasever='7Server' --name 'Red Hat Enterprise Virtualization Hypervisor 7 (RPMs)'
+        time hammer repository synchronize --organization "$ORG" --product 'Red Hat Virtualization'  --name  'Red Hat Enterprise Virtualization Hypervisor 7 RPMs x86_64 7Server' 2>/dev/null
+        hammer repository-set enable --organization "$ORG" --product 'Red Hat Virtualization' --basearch='x86_64' --name 'Red Hat Enterprise Virtualization Manager 3.6 (RPMs)'
+        time hammer repository synchronize --organization "$ORG" --product 'Red Hat Virtualization'  --name  'Red Hat Enterprise Virtualization Manager 3.6 RPMs x86_64' 2>/dev/null
 
         hammer repository-set enable --organization "$ORG" --product 'Red Hat Enterprise Linux Atomic Host' --basearch='x86_64' --name 'Red Hat Enterprise Linux Atomic Host (RPMs)'
         time hammer repository synchronize --organization "$ORG" --product 'Red Hat Enterprise Linux Atomic Host'  --name  'Red Hat Enterprise Linux Atomic Host RPMs x86_64' 2>/dev/null
 
         # hammer repository-set enable --organization "$ORG" --product 'Red Hat Virtualization Host' --basearch='x86_64' --name 'Red Hat Virtualization Host 7 (RPMs)'
         # time hammer repository synchronize --organization "$ORG" --product 'Red Hat Virtualization Host'  --name  'Red Hat Virtualization Host 7 RPMs x86_64' 2>/dev/null
-        # hammer repository-set enable --organization "$ORG" --product 'Red Hat Enterprise Virtualization' --basearch='x86_64' --name 'Red Hat Virtualization Manager 4.0 (RHEL 7 Server) (RPMs)'
-        # time hammer repository synchronize --organization "$ORG" --product 'Red Hat Enterprise Virtualization'  --name  'Red Hat Virtualization Manager 4.0 RHEL 7 Server RPMs x86_64' 2>/dev/null
-        # hammer repository-set enable --organization "$ORG" --product 'Red Hat Enterprise Virtualization' --basearch='x86_64' --releasever='7Server' --name 'Red Hat Virtualization 4 Management Agents for RHEL 7 (RPMs)'
-        # time hammer repository synchronize --organization "$ORG" --product 'Red Hat Enterprise Virtualization'  --name  'Red Hat Virtualization 4 Management Agents for RHEL 7 RPMs x86_64 7Server' 2>/dev/null
+        # hammer repository-set enable --organization "$ORG" --product 'Red Hat Virtualization' --basearch='x86_64' --name 'Red Hat Virtualization Manager 4.0 (RHEL 7 Server) (RPMs)'
+        # time hammer repository synchronize --organization "$ORG" --product 'Red Hat Virtualization'  --name  'Red Hat Virtualization Manager 4.0 RHEL 7 Server RPMs x86_64' 2>/dev/null
+        # hammer repository-set enable --organization "$ORG" --product 'Red Hat Virtualization' --basearch='x86_64' --releasever='7Server' --name 'Red Hat Virtualization 4 Management Agents for RHEL 7 (RPMs)'
+        # time hammer repository synchronize --organization "$ORG" --product 'Red Hat Virtualization'  --name  'Red Hat Virtualization 4 Management Agents for RHEL 7 RPMs x86_64 7Server' 2>/dev/null
         # hammer repository-set enable --organization "$ORG" --product '' --basearch='x86_64' --releasever='7Server' --name ''
         # time hammer repository synchronize --organization "$ORG" --product ''  --name  '' 2>/dev/null
 
@@ -518,7 +518,7 @@ if [ $STAGE -le 5 ]; then
     hammer content-view create --organization "$ORG" --name 'inf-hypervisor-rhel7' --label inf-hypervisor-rhel7 --description ''
     hammer content-view add-repository --organization "$ORG" --name 'inf-hypervisor-rhel7' --product 'Red Hat Enterprise Linux Server' --repository 'Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server'
     hammer content-view add-repository --organization "$ORG" --name 'inf-hypervisor-rhel7' --product 'Red Hat Enterprise Linux Server' --repository 'Red Hat Satellite Tools 6.2 for RHEL 7 Server RPMs x86_64'
-    hammer content-view add-repository --organization "$ORG" --name 'inf-hypervisor-rhel7' --product 'Red Hat Enterprise Virtualization' --repository 'Red Hat Enterprise Virtualization Management Agents for RHEL 7 RPMs x86_64 7Server'
+    hammer content-view add-repository --organization "$ORG" --name 'inf-hypervisor-rhel7' --product 'Red Hat Virtualization' --repository 'Red Hat Virtualization 4 Management Agents for RHEL 7 RPMs x86_64 7Server'
     hammer content-view puppet-module add --organization "$ORG" --content-view inf-hypervisor-rhel7 --author puppetlabs --name stdlib
     hammer content-view puppet-module add --organization "$ORG" --content-view inf-hypervisor-rhel7 --author puppetlabs --name concat
     hammer content-view puppet-module add --organization "$ORG" --content-view inf-hypervisor-rhel7 --author puppetlabs --name ntp
