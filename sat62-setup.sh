@@ -90,6 +90,7 @@ export IPA_EXT_CERT=true
 export RHEL6_CONTENT=false
 export OPT_CONTENT=true
 export EXT_CONTENT=false
+export EXT_CONTENT_RHV36=true
 export CUST_CONTENT=true
 
 # The following block of parameters needs to reflect your environment.
@@ -144,10 +145,11 @@ if [ $STAGE -le 1 ]; then
         --enable=rhel-server-rhscl-7-rpms \
         --enable=rhel-7-server-optional-rpms \
         --enable=rhel-7-server-satellite-6.2-rpms
+    yum install -y yum-utils
     rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
     yum-config-manager --disable epel
     yum -y upgrade
-    yum install -y screen yum-utils vim
+    yum install -y screen vim
     echo "${SAT_IP} $(hostname)" >>/etc/hosts
 
     yum install -y ipa-client ipa-admintools
@@ -195,11 +197,11 @@ EOF
         katello-certs-check \
           -b /etc/ipa/ca.crt \
           -k /root/certs/key.pem \
-          -c /root/certs/${longname}.crt \
+          -c /root/certs/${longname}.pem \
           -r /root/certs/${longname}.csr
         CERT_ARGS="--certs-server-ca-cert /etc/ipa/ca.crt \
                --certs-server-key /root/certs/key.pem \
-               --certs-server-cert /root/certs/${longname}.crt \
+               --certs-server-cert /root/certs/${longname}.pem \
                --certs-server-cert-req /root/certs/${longname}.csr"
     fi
 
@@ -211,6 +213,8 @@ EOF
         Manual action required!
 
             To proceed you need to manually copy the freeipa.keytab from your existing Satellite server.
+	    If this is not there you need to generate the file
+	      ipa-getkeytab -s satellite.example.com -p HTTP/satellite.example.com -k /root/freeipa.keytab -e aes256-cts
 	    The file is located in /etc/foreman-proxy/freeipa.keytab.
 	    Make sure it is owned by foreman-proxy.foreman-proxy and has permission 0600.
 	    Do not run foreman-prepare-realm again. This will invalidate all pre-existing freeipa.keytab files.
@@ -381,22 +385,26 @@ if [ $STAGE -le 3 ]; then
         hammer repository-set enable --organization "$ORG" --product 'Red Hat Enterprise Linux Server' --basearch='x86_64' --releasever='7Server' --name 'Red Hat OpenStack Tools 7.0 for Red Hat Enterprise Linux 7 Server (RPMs)'
         time hammer repository synchronize --organization "$ORG" --product 'Red Hat Enterprise Linux Server'  --name  'Red Hat OpenStack Tools 7.0 for Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server' 2>/dev/null
 
-        hammer repository-set enable --organization "$ORG" --product 'Red Hat Enterprise Virtualization' --basearch='x86_64' --releasever='7Server' --name 'Red Hat Enterprise Virtualization Hypervisor 7 (RPMs)'
-        time hammer repository synchronize --organization "$ORG" --product 'Red Hat Enterprise Virtualization'  --name  'Red Hat Enterprise Virtualization Hypervisor 7 RPMs x86_64 7Server' 2>/dev/null
-        hammer repository-set enable --organization "$ORG" --product 'Red Hat Enterprise Virtualization' --basearch='x86_64' --name 'Red Hat Enterprise Virtualization Manager 3.6 (RPMs)'
-        time hammer repository synchronize --organization "$ORG" --product 'Red Hat Enterprise Virtualization'  --name  'Red Hat Enterprise Virtualization Manager 3.6 RPMs x86_64' 2>/dev/null
-
+	if [ $EXT_CONTENT_RHV36 = 'true' ]; then
+        	hammer repository-set enable --organization "$ORG" --product 'Red Hat Enterprise Virtualization' --basearch='x86_64' --releasever='7Server' --name 'Red Hat Enterprise Virtualization Hypervisor 7 (RPMs)'
+        	time hammer repository synchronize --organization "$ORG" --product 'Red Hat Enterprise Virtualization'  --name  'Red Hat Enterprise Virtualization Hypervisor 7 RPMs x86_64 7Server' 2>/dev/null
+        	hammer repository-set enable --organization "$ORG" --product 'Red Hat Enterprise Virtualization' --basearch='x86_64' --name 'Red Hat Enterprise Virtualization Manager 3.6 (RPMs)'
+        	time hammer repository synchronize --organization "$ORG" --product 'Red Hat Enterprise Virtualization'  --name  'Red Hat Enterprise Virtualization Manager 3.6 RPMs x86_64' 2>/dev/null
+	elif [ $EXT_CONTENT_RHV36 = 'false' ]; then
+        	hammer repository-set enable --organization "$ORG" --product 'Red Hat Virtualization Host' --basearch='x86_64' --name 'Red Hat Virtualization Host 7 (RPMs)'
+        	time hammer repository synchronize --organization "$ORG" --product 'Red Hat Virtualization Host'  --name  'Red Hat Virtualization Host 7 RPMs x86_64' 2>/dev/null
+        	hammer repository-set enable --organization "$ORG" --product 'Red Hat Enterprise Virtualization' --basearch='x86_64' --name 'Red Hat Virtualization Manager 4.0 (RHEL 7 Server) (RPMs)'
+        	time hammer repository synchronize --organization "$ORG" --product 'Red Hat Enterprise Virtualization'  --name  'Red Hat Virtualization Manager 4.0 RHEL 7 Server RPMs x86_64' 2>/dev/null
+        	hammer repository-set enable --organization "$ORG" --product 'Red Hat Enterprise Virtualization' --basearch='x86_64' --releasever='7Server' --name 'Red Hat Virtualization 4 Management Agents for RHEL 7 (RPMs)'
+        	time hammer repository synchronize --organization "$ORG" --product 'Red Hat Enterprise Virtualization'  --name  'Red Hat Virtualization 4 Management Agents for RHEL 7 RPMs x86_64 7Server' 2>/dev/null
+        	hammer repository-set enable --organization "$ORG" --product '' --basearch='x86_64' --releasever='7Server' --name ''
+        	time hammer repository synchronize --organization "$ORG" --product ''  --name  '' 2>/dev/null		
+	fi
+	
         hammer repository-set enable --organization "$ORG" --product 'Red Hat Enterprise Linux Atomic Host' --basearch='x86_64' --name 'Red Hat Enterprise Linux Atomic Host (RPMs)'
         time hammer repository synchronize --organization "$ORG" --product 'Red Hat Enterprise Linux Atomic Host'  --name  'Red Hat Enterprise Linux Atomic Host RPMs x86_64' 2>/dev/null
 
-        # hammer repository-set enable --organization "$ORG" --product 'Red Hat Virtualization Host' --basearch='x86_64' --name 'Red Hat Virtualization Host 7 (RPMs)'
-        # time hammer repository synchronize --organization "$ORG" --product 'Red Hat Virtualization Host'  --name  'Red Hat Virtualization Host 7 RPMs x86_64' 2>/dev/null
-        # hammer repository-set enable --organization "$ORG" --product 'Red Hat Enterprise Virtualization' --basearch='x86_64' --name 'Red Hat Virtualization Manager 4.0 (RHEL 7 Server) (RPMs)'
-        # time hammer repository synchronize --organization "$ORG" --product 'Red Hat Enterprise Virtualization'  --name  'Red Hat Virtualization Manager 4.0 RHEL 7 Server RPMs x86_64' 2>/dev/null
-        # hammer repository-set enable --organization "$ORG" --product 'Red Hat Enterprise Virtualization' --basearch='x86_64' --releasever='7Server' --name 'Red Hat Virtualization 4 Management Agents for RHEL 7 (RPMs)'
-        # time hammer repository synchronize --organization "$ORG" --product 'Red Hat Enterprise Virtualization'  --name  'Red Hat Virtualization 4 Management Agents for RHEL 7 RPMs x86_64 7Server' 2>/dev/null
-        # hammer repository-set enable --organization "$ORG" --product '' --basearch='x86_64' --releasever='7Server' --name ''
-        # time hammer repository synchronize --organization "$ORG" --product ''  --name  '' 2>/dev/null
+
 
         if [ $RHEL6_CONTENT = 'true' ]; then
             hammer repository-set enable --organization "$ORG" --product 'JBoss Enterprise Application Platform' --basearch='x86_64' --releasever='7Server' --name 'JBoss Enterprise Application Platform 6 (RHEL 7 Server) (RPMs)'
